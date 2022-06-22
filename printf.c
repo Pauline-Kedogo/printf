@@ -1,46 +1,37 @@
+#include <stdio.h>
 #include "main.h"
 /**
- * _printf - function that prints to std
- * @format: character string
- * Return: the number of characters printed
- * excluding the null byte used to end output to strings
+ * _printf - function that produces output according to format
+ * @format: contains conversion specifiers like "c","s","%"
+ * Return: Numbers of characters printed
  */
 int _printf(const char *format, ...)
 {
-	int count = -1;
+	int counter;
+	va_list aps;
 
-	if (format != NULL)
-	{
-		va_list args;
-		int i = 0, (*fs)(va_list);
+	spec_t specs[] = {
+		{"c", print_c},
+		{"s", print_s},
+		{"d", print_i},
+		{"i", print_i},
+		{"b", print_b},
+		{"u", print_ui},
+		{"o", print_oct},
+		{"x", print_hex},
+		{"X", print_Hex},
+		{"S", print_cs},
+		{"p", print_ptr},
+		{"R", conv_rot13},
+		{"r", _rev},
+		{NULL, NULL}
+	};
+	va_start(aps, format);
 
-		va_start(args, format);
-		if (format[0] == '%' && format[1] == '\0')
-			return (count);
-		count = 0;
-		while (format[i] != '\0')
-		{
-			if (format[i] != '%')
-			{
-				count += _putchar(format[i]);
-			}
-			else
-			{
-				if (format[i + 1] == '%')
-				{
-					count += _putchar('%');
-					i++;
-				}
-				else
-				{
-					fs = choice(format[i + 1]);
-					count += (fs ? fs(args) : _putchar(format[i]) + _putchar(format[i + 1]));
-					i++;
-				}
-			}
-			i++;
-		}
-		va_end(args);
-	}
-	return (count);
+	if (!format)
+		counter = -1;
+	else
+		counter = _vprintf(specs, format, aps);
+	va_end(aps);
+	return (counter);
 }
